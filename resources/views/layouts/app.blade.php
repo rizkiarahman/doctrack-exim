@@ -24,6 +24,8 @@
     <div class="bg-glow bg-glow-3"></div>
 
     <div class="app-container">
+        <!-- Sidebar Overlay (Mobile) -->
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
         <!-- Sidebar Navigation -->
         <aside class="sidebar">
             <div class="sidebar-header">
@@ -83,6 +85,22 @@
 
         <!-- Main Content Area -->
         <main class="main-content">
+            <!-- Mobile Top Bar Navigation -->
+            <div class="mobile-top-bar">
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle" title="Buka Menu">
+                    <i class="bi bi-list"></i>
+                </button>
+                <div class="logo-container" style="display: flex; align-items: center; gap: 8px;">
+                    <div class="logo-icon" style="width: 32px; height: 32px; font-size: 16px;">
+                        <i class="bi bi-file-earmark-arrow-up-fill"></i>
+                    </div>
+                    <h1 class="logo-text" style="font-size: 11px; font-weight: 800; line-height: 1.3; margin: 0; text-align: left;">EXIM Track Dokumen <br><span style="color: var(--color-accent); font-size: 8px;">PT. Detpak Indonesia</span></h1>
+                </div>
+                <div class="mobile-status-dot">
+                    <span class="dot pulse green"></span>
+                </div>
+            </div>
+
             <header class="top-bar">
                 <div class="top-bar-title">
                     <h2>@yield('header_title', 'Dashboard')</h2>
@@ -135,6 +153,19 @@
                 // Toggle icon class
                 toggleBtn.querySelector('i').className = collapsed ? 'bi bi-chevron-right' : 'bi bi-chevron-left';
             });
+            // Mobile Menu Toggle & Overlay
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+            if (mobileMenuToggle && sidebarOverlay) {
+                mobileMenuToggle.addEventListener('click', function () {
+                    appContainer.classList.add('mobile-sidebar-open');
+                });
+
+                sidebarOverlay.addEventListener('click', function () {
+                    appContainer.classList.remove('mobile-sidebar-open');
+                });
+            }
         });
     </script>
 </body>
