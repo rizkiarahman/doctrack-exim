@@ -150,7 +150,7 @@
                     <i class="bi bi-file-earmark-arrow-up-fill"></i>
                 </div>
                 <h1 style="font-family: var(--font-heading); font-size: 22px; font-weight: 800; line-height: 1.3;">EXIM Track Dokumen <br><span style="color: var(--color-accent); font-size: 15px;">PT. Detpak Indonesia</span></h1>
-                <p style="margin-top: 8px;">Sistem Monitoring Tanda Tangan Dokumen</p>
+                <p style="margin-top: 8px;">Sistem Monitoring Tanda Tangan & Sunting Dokumen</p>
             </div>
 
             <form action="{{ route('login') }}" method="POST">

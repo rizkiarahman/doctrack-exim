@@ -70,14 +70,6 @@
                             <span>Berbagi File</span>
                         </a>
                     </li>
-                    @if(Auth::check() && Auth::user()->role === 'admin')
-                    <li class="{{ str_starts_with(Route::currentRouteName(), 'users') ? 'active' : '' }}">
-                        <a href="{{ route('users.index') }}">
-                            <i class="bi bi-people-fill"></i>
-                            <span>Kelola Akun</span>
-                        </a>
-                    </li>
-                    @endif
                     <li>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
@@ -90,16 +82,23 @@
                 </ul>
             </nav>
 
+            @php
+                $isProfileActive = Route::currentRouteName() == 'profile.edit' || str_starts_with(Route::currentRouteName(), 'users');
+                $profileRoute = (Auth::check() && Auth::user()->role === 'admin') ? route('users.index') : route('profile.edit');
+            @endphp
             <div class="sidebar-footer">
-                <div class="user-profile">
-                    <div class="avatar">
-                        <i class="bi bi-person-fill-gear text-accent" style="color: var(--color-accent);"></i>
+                <a href="{{ $profileRoute }}" class="user-profile {{ $isProfileActive ? 'active' : '' }}" title="Klik untuk Kelola Akun" style="text-decoration: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: var(--radius-md); border: 1px solid {{ $isProfileActive ? 'var(--color-primary)' : 'var(--glass-border)' }}; background: {{ $isProfileActive ? 'rgba(99, 102, 241, 0.15)' : 'rgba(255, 255, 255, 0.02)' }}; transition: var(--transition-smooth);">
+                    <div style="display: flex; align-items: center; gap: 10px; overflow: hidden;">
+                        <div class="avatar" style="width: 36px; height: 36px; border-radius: 50%; background: rgba(99, 102, 241, 0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <i class="bi bi-person-fill-gear text-accent" style="color: var(--color-accent); font-size: 18px;"></i>
+                        </div>
+                        <div class="user-info" style="overflow: hidden;">
+                            <p class="user-name" style="font-size: 12px; font-weight: 700; margin: 0; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ Auth::user()->name ?? 'User EXIM' }}</p>
+                            <p class="user-role" style="font-size: 10px; color: var(--text-muted); margin: 0;">{{ Auth::check() ? ucfirst(Auth::user()->role) : 'Guest' }} &bull; <span style="color: var(--color-accent); font-weight: 500;">Kelola Akun</span></p>
+                        </div>
                     </div>
-                    <div class="user-info">
-                        <p class="user-name">{{ Auth::user()->name ?? 'User EXIM' }}</p>
-                        <p class="user-role">{{ Auth::check() ? ucfirst(Auth::user()->role) : 'Guest' }}</p>
-                    </div>
-                </div>
+                    <i class="bi bi-gear-fill" style="color: var(--color-accent); font-size: 15px; flex-shrink: 0; opacity: 0.85;"></i>
+                </a>
             </div>
         </aside>
 

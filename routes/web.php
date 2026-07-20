@@ -34,6 +34,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/shared-files/{file}/download', [SharedFileController::class, 'download'])->name('shared-files.download');
     Route::delete('/shared-files/{file}', [SharedFileController::class, 'destroy'])->name('shared-files.destroy');
 
+    // User Self Account Management (Email & Password)
+    Route::get('/profile', [UserController::class, 'editProfile'])->name('profile.edit');
+    Route::put('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
+
     // Admin-Only Routes
     Route::middleware('admin')->group(function () {
         // Document Modification Actions

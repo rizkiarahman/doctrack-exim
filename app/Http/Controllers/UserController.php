@@ -116,4 +116,45 @@ class UserController extends Controller
 
         return redirect()->route('users.index')->with('success', 'Akun pengguna berhasil dihapus!');
     }
+
+    /**
+     * Tampilkan halaman kelola akun sendiri (Email & Password).
+     */
+    public function editProfile()
+    {
+        $user = auth()->user();
+        return view('users.profile', compact('user'));
+    }
+
+    /**
+     * Perbarui hanya informasi email dan password akun pengguna sendiri.
+     */
+    public function updateProfile(Request $request)
+    {
+        /** @var \App\Models\User $user */
+        $user = auth()->user();
+
+        $request->validate([
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
+            'password' => 'nullable|string|min:6|confirmed',
+        ], [
+            'email.required' => 'Alamat email wajib diisi.',
+            'email.email' => 'Format alamat email tidak valid.',
+            'email.unique' => 'Alamat email sudah digunakan oleh akun lain.',
+            'password.min' => 'Kata sandi minimal harus 6 karakter.',
+            'password.confirmed' => 'Konfirmasi kata sandi baru tidak cocok.',
+        ]);
+
+        $data = [
+            'email' => $request->email,
+        ];
+
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->password);
+        }
+
+        $user->update($data);
+
+        return redirect()->route('profile.edit')->with('success', 'Informasi email dan kata sandi akun Anda berhasil diperbarui!');
+    }
 }
