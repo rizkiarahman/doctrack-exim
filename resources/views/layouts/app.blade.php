@@ -58,6 +58,26 @@
                             <span>Semua Dokumen</span>
                         </a>
                     </li>
+                    <li class="{{ str_starts_with(Route::currentRouteName(), 'pdf') ? 'active' : '' }}">
+                        <a href="{{ route('pdf.index') }}">
+                            <i class="bi bi-file-earmark-pdf-fill"></i>
+                            <span>Sunting PDF</span>
+                        </a>
+                    </li>
+                    <li class="{{ str_starts_with(Route::currentRouteName(), 'shared-files') ? 'active' : '' }}">
+                        <a href="{{ route('shared-files.index') }}">
+                            <i class="bi bi-folder2-open"></i>
+                            <span>Berbagi File</span>
+                        </a>
+                    </li>
+                    @if(Auth::check() && Auth::user()->role === 'admin')
+                    <li class="{{ str_starts_with(Route::currentRouteName(), 'users') ? 'active' : '' }}">
+                        <a href="{{ route('users.index') }}">
+                            <i class="bi bi-people-fill"></i>
+                            <span>Kelola Akun</span>
+                        </a>
+                    </li>
+                    @endif
                     <li>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
@@ -96,7 +116,10 @@
                     </div>
                     <h1 class="logo-text" style="font-size: 11px; font-weight: 800; line-height: 1.3; margin: 0; text-align: left;">EXIM Track Dokumen <br><span style="color: var(--color-accent); font-size: 8px;">PT. Detpak Indonesia</span></h1>
                 </div>
-                <div class="mobile-status-dot">
+                <div class="mobile-status-dot" style="display: flex; align-items: center; gap: 10px;">
+                    <button class="theme-toggle-btn" id="theme-toggle-btn-mobile" title="Ganti Mode Terang/Gelap">
+                        <i class="bi bi-sun-fill"></i>
+                    </button>
                     <span class="dot pulse green"></span>
                 </div>
             </div>
@@ -106,7 +129,10 @@
                     <h2>@yield('header_title', 'Dashboard')</h2>
                     <p class="text-muted">@yield('header_subtitle', 'Statistik dan monitoring tanda tangan dokumen')</p>
                 </div>
-                <div class="top-bar-actions">
+                <div class="top-bar-actions" style="display: flex; align-items: center; gap: 15px;">
+                    <button class="theme-toggle-btn" id="theme-toggle-btn" title="Ganti Mode Terang/Gelap">
+                        <i class="bi bi-sun-fill"></i>
+                    </button>
                     <div class="status-indicator">
                         <span class="dot pulse green"></span>
                         <span class="text-sm">Database Connected</span>
@@ -166,6 +192,33 @@
                     appContainer.classList.remove('mobile-sidebar-open');
                 });
             }
+            // Theme Mode Toggle (Light/Dark)
+            const themeToggleBtn = document.getElementById('theme-toggle-btn');
+            const themeToggleBtnMobile = document.getElementById('theme-toggle-btn-mobile');
+
+            function applyTheme(theme) {
+                if (theme === 'light') {
+                    document.body.classList.add('light-theme');
+                    if (themeToggleBtn) themeToggleBtn.innerHTML = '<i class="bi bi-moon-stars-fill"></i>';
+                    if (themeToggleBtnMobile) themeToggleBtnMobile.innerHTML = '<i class="bi bi-moon-stars-fill"></i>';
+                } else {
+                    document.body.classList.remove('light-theme');
+                    if (themeToggleBtn) themeToggleBtn.innerHTML = '<i class="bi bi-sun-fill"></i>';
+                    if (themeToggleBtnMobile) themeToggleBtnMobile.innerHTML = '<i class="bi bi-sun-fill"></i>';
+                }
+            }
+
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            applyTheme(savedTheme);
+
+            function toggleTheme() {
+                const currentTheme = document.body.classList.contains('light-theme') ? 'dark' : 'light';
+                localStorage.setItem('theme', currentTheme);
+                applyTheme(currentTheme);
+            }
+
+            if (themeToggleBtn) themeToggleBtn.addEventListener('click', toggleTheme);
+            if (themeToggleBtnMobile) themeToggleBtnMobile.addEventListener('click', toggleTheme);
         });
     </script>
 </body>

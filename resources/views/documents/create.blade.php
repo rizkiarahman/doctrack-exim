@@ -8,7 +8,7 @@
 <div class="card" style="max-width: 800px; margin: 0 auto; position: relative; overflow: hidden;">
     <!-- Decorative Glow Blobs inside the card -->
     <div style="position: absolute; width: 150px; height: 150px; background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%); top: -50px; right: -50px; pointer-events: none;"></div>
-    
+
     <div class="section-header" style="margin-bottom: 24px; border-bottom: 1px solid var(--glass-border); padding-bottom: 16px;">
         <h3 class="section-title">
             <i class="bi bi-file-earmark-plus-fill text-accent" style="color: var(--color-accent); text-shadow: 0 0 10px rgba(6, 182, 212, 0.3);"></i>
@@ -32,7 +32,7 @@
 
     <form action="{{ route('documents.store') }}" method="POST">
         @csrf
-        
+
         <div class="form-grid">
             <!-- No. AJU -->
             <div class="form-group">
@@ -42,7 +42,7 @@
                     <i class="bi bi-hash" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 16px;"></i>
                 </div>
                 @error('no_aju')
-                    <p class="error-text">{{ $message }}</p>
+                <p class="error-text">{{ $message }}</p>
                 @enderror
             </div>
 
@@ -50,11 +50,11 @@
             <div class="form-group">
                 <label for="pic">Nama PIC (Penanggung Jawab) <span class="text-danger" style="color: var(--color-danger);">*</span></label>
                 <div style="position: relative;">
-                    <input type="text" name="pic" id="pic" class="form-control @error('pic') is-invalid @enderror" placeholder="Contoh: Ahmad Fauzi" value="{{ old('pic') }}" required style="padding-left: 45px;">
+                    <input type="text" name="pic" id="pic" class="form-control @error('pic') is-invalid @enderror" placeholder="Contoh: Muhamad Rizki" value="{{ old('pic') }}" required style="padding-left: 45px;">
                     <i class="bi bi-person-fill" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 16px;"></i>
                 </div>
                 @error('pic')
-                    <p class="error-text">{{ $message }}</p>
+                <p class="error-text">{{ $message }}</p>
                 @enderror
             </div>
         </div>
@@ -68,7 +68,7 @@
                     <i class="bi bi-calendar-plus" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 16px;"></i>
                 </div>
                 @error('tgl_diserahkan')
-                    <p class="error-text">{{ $message }}</p>
+                <p class="error-text">{{ $message }}</p>
                 @enderror
             </div>
 
@@ -80,7 +80,7 @@
                     <i class="bi bi-calendar-check" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 16px;"></i>
                 </div>
                 @error('tgl_kembali')
-                    <p class="error-text">{{ $message }}</p>
+                <p class="error-text">{{ $message }}</p>
                 @enderror
             </div>
         </div>
@@ -93,7 +93,7 @@
                 <i class="bi bi-sticky" style="position: absolute; left: 16px; top: 20px; color: var(--text-muted); font-size: 16px;"></i>
             </div>
             @error('catatan')
-                <p class="error-text">{{ $message }}</p>
+            <p class="error-text">{{ $message }}</p>
             @enderror
         </div>
 
@@ -109,7 +109,7 @@
 
 <!-- Real-time Status Calculator Script -->
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const tglDiserahkanInput = document.getElementById('tgl_diserahkan');
         const tglKembaliInput = document.getElementById('tgl_kembali');
         const badgeContainer = document.getElementById('live-status-badge');
@@ -121,25 +121,25 @@
             if (!diserahkanVal) return;
 
             const diserahkanDate = new Date(diserahkanVal);
-            diserahkanDate.setHours(0,0,0,0);
+            diserahkanDate.setHours(0, 0, 0, 0);
 
             let statusHtml = '';
 
             if (kembaliVal) {
                 // If returned
                 const kembaliDate = new Date(kembaliVal);
-                kembaliDate.setHours(0,0,0,0);
-                
+                kembaliDate.setHours(0, 0, 0, 0);
+
                 // Calculate difference
                 const diffTime = Math.abs(kembaliDate - diserahkanDate);
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                
+
                 statusHtml = `<span class="badge badge-success" style="font-size: 13px; padding: 8px 16px; box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);"><i class="bi bi-check-circle-fill"></i> Sudah Kembali (Selesai ${diffDays} Hari)</span>`;
             } else {
                 // Pending
                 const today = new Date();
-                today.setHours(0,0,0,0);
-                
+                today.setHours(0, 0, 0, 0);
+
                 const diffTime = today - diserahkanDate;
                 const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
@@ -156,7 +156,7 @@
 
         tglDiserahkanInput.addEventListener('change', updatePreviewStatus);
         tglKembaliInput.addEventListener('change', updatePreviewStatus);
-        
+
         // Run initial calculation
         updatePreviewStatus();
     });

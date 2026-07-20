@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\PdfController;
+use App\Http\Controllers\SharedFileController;
 use App\Http\Controllers\Auth\LoginController;
 
 // Guest Routes
@@ -22,14 +25,26 @@ Route::middleware('auth')->group(function () {
     // Document Read-Only List (Admin & User)
     Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
 
-    // Document Modification Actions (Admin Only)
-    // NOTE: Defined BEFORE the wildcard '{document}' route to avoid collisions
+    // PDF Tool (Admin & User)
+    Route::get('/pdf-editor', [PdfController::class, 'index'])->name('pdf.index');
+
+    // Shared Files / Drive (Admin & User)
+    Route::get('/shared-files', [SharedFileController::class, 'index'])->name('shared-files.index');
+    Route::post('/shared-files', [SharedFileController::class, 'store'])->name('shared-files.store');
+    Route::get('/shared-files/{file}/download', [SharedFileController::class, 'download'])->name('shared-files.download');
+    Route::delete('/shared-files/{file}', [SharedFileController::class, 'destroy'])->name('shared-files.destroy');
+
+    // Admin-Only Routes
     Route::middleware('admin')->group(function () {
+        // Document Modification Actions
         Route::get('/documents/create', [DocumentController::class, 'create'])->name('documents.create');
         Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
         Route::get('/documents/{document}/edit', [DocumentController::class, 'edit'])->name('documents.edit');
         Route::put('/documents/{document}', [DocumentController::class, 'update'])->name('documents.update');
         Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])->name('documents.destroy');
+
+        // User Management CRUD (Kelola Akun)
+        Route::resource('users', UserController::class);
     });
 
     // Document Wildcard Show Route (Admin & User) - Defined AFTER create to prevent collision
