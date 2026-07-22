@@ -28,6 +28,9 @@ Route::middleware('auth')->group(function () {
     // PDF Tool (Admin & User)
     Route::get('/pdf-editor', [PdfController::class, 'index'])->name('pdf.index');
 
+    // Excel Tool (Admin & User)
+    Route::view('/transform-excel', 'excel.transform')->name('excel.transform');
+
     // Shared Files / Drive (Admin & User)
     Route::get('/shared-files', [SharedFileController::class, 'index'])->name('shared-files.index');
     Route::post('/shared-files', [SharedFileController::class, 'store'])->name('shared-files.store');

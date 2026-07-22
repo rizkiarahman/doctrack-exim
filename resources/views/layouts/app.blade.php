@@ -70,6 +70,12 @@
                             <span>Berbagi File</span>
                         </a>
                     </li>
+                    <li class="{{ str_starts_with(Route::currentRouteName(), 'excel') ? 'active' : '' }}">
+                        <a href="{{ route('excel.transform') }}">
+                            <i class="bi bi-file-earmark-excel-fill text-success" style="color: var(--color-success) !important;"></i>
+                            <span>Transform Excel</span>
+                        </a>
+                    </li>
                     <li>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
