@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\SharedFileController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\TodoTaskController;
 
 // Guest Routes
 Route::middleware('guest')->group(function () {
@@ -30,6 +31,14 @@ Route::middleware('auth')->group(function () {
 
     // Excel Tool (Admin & User)
     Route::view('/transform-excel', 'excel.transform')->name('excel.transform');
+    Route::view('/transform-excel/assistant', 'excel.assistant')->name('excel.assistant');
+
+    // To-Do List / Daftar Tugas (Admin & User)
+    Route::get('/todo-list', [TodoTaskController::class, 'index'])->name('todo.index');
+    Route::post('/todo-list', [TodoTaskController::class, 'store'])->name('todo.store');
+    Route::put('/todo-list/{id}/status', [TodoTaskController::class, 'updateStatus'])->name('todo.updateStatus');
+    Route::delete('/todo-list/{id}', [TodoTaskController::class, 'destroy'])->name('todo.destroy');
+    Route::post('/todo-list/reset', [TodoTaskController::class, 'resetToday'])->name('todo.reset');
 
     // Shared Files / Drive (Admin & User)
     Route::get('/shared-files', [SharedFileController::class, 'index'])->name('shared-files.index');

@@ -111,8 +111,8 @@
                         <strong style="color: var(--text-secondary);">{{ $file->user->name ?? 'User' }}</strong>
                     </div>
                     <div style="display: flex; justify-content: space-between;">
-                        <span>Waktu:</span>
-                        <span>{{ $file->created_at->format('d/m/Y H:i') }}</span>
+                        <span>Diunggah Pada:</span>
+                        <strong style="color: var(--text-secondary);">{{ $file->created_at->format('d/m/Y H:i') }} WIB</strong>
                     </div>
                 </div>
             </div>

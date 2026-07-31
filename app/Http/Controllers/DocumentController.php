@@ -58,6 +58,13 @@ class DocumentController extends Controller
         // Recent documents for quick view
         $recent_documents = EximDocument::orderBy('updated_at', 'desc')->take(5)->get();
 
+        // Fetch today's tasks & progress
+        $userId = auth()->id();
+        $todoTasks = \App\Http\Controllers\TodoTaskController::getOrInitializeTodayTasks($userId);
+        $totalTodo = $todoTasks->count();
+        $completedTodo = $todoTasks->where('status', 'selesai')->count();
+        $todoProgress = $totalTodo > 0 ? round(($completedTodo / $totalTodo) * 100) : 0;
+
         return view('dashboard', compact(
             'total_aktif',
             'menunggu_tanda_tangan',
@@ -66,7 +73,9 @@ class DocumentController extends Controller
             'rata_rata_hari',
             'dokumen_terlama',
             'ai_warnings',
-            'recent_documents'
+            'recent_documents',
+            'todoTasks',
+            'todoProgress'
         ));
     }
 

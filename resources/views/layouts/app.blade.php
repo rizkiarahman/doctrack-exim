@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'EXIM Track Dokumen PT. Detpak Indonesia') - Monitoring Dokumen</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📑</text></svg>">
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
+
 <body>
     <!-- Background Gradients -->
     <div class="bg-glow bg-glow-1"></div>
@@ -43,7 +45,7 @@
                     </button>
                 </div>
             </div>
-            
+
             <nav class="sidebar-nav">
                 <ul>
                     <li class="{{ Route::currentRouteName() == 'dashboard' ? 'active' : '' }}">
@@ -58,6 +60,31 @@
                             <span>Semua Dokumen</span>
                         </a>
                     </li>
+                    <li class="{{ str_starts_with(Route::currentRouteName(), 'todo') ? 'active' : '' }}">
+                        <a href="{{ route('todo.index') }}">
+                            <i class="bi bi-calendar-check-fill text-warning" style="color: var(--color-warning) !important;"></i>
+                            <span>Daftar Tugas</span>
+                        </a>
+                    </li>
+                    <li class="excel-menu-item {{ str_starts_with(Route::currentRouteName(), 'excel') ? 'active' : '' }}" style="position: relative;">
+                        <a href="{{ route('excel.transform') }}">
+                            <i class="bi bi-file-earmark-excel-fill text-success"></i>
+                            <span>Transform Excel</span>
+                        </a>
+                        <!-- Chevron toggle button absolute positioned -->
+                        <button type="button" id="submenu-toggle-trigger" style="position: absolute; right: 8px; top: 12px; background: transparent; border: none; color: var(--text-muted); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-smooth); z-index: 10;" title="Toggle Submenu">
+                            <i class="bi bi-chevron-down" id="submenu-toggle-chevron" style="font-size: 11px; transition: transform 0.3s ease;"></i>
+                        </button>
+                        <!-- Sub Menu -->
+                        <ul class="sub-menu" id="excel-sub-menu" style="transition: all 0.3s ease; overflow: hidden;">
+                            <li class="{{ Route::currentRouteName() == 'excel.assistant' ? 'active-sub' : '' }}">
+                                <a href="{{ route('excel.assistant') }}">
+                                    <i class="bi bi-cpu-fill text-accent" style="color: var(--color-accent) !important;"></i>
+                                    <span>AI Excel Assistant</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                     <li class="{{ str_starts_with(Route::currentRouteName(), 'pdf') ? 'active' : '' }}">
                         <a href="{{ route('pdf.index') }}">
                             <i class="bi bi-file-earmark-pdf-fill"></i>
@@ -68,12 +95,6 @@
                         <a href="{{ route('shared-files.index') }}">
                             <i class="bi bi-folder2-open"></i>
                             <span>Berbagi File</span>
-                        </a>
-                    </li>
-                    <li class="{{ str_starts_with(Route::currentRouteName(), 'excel') ? 'active' : '' }}">
-                        <a href="{{ route('excel.transform') }}">
-                            <i class="bi bi-file-earmark-excel-fill text-success" style="color: var(--color-success) !important;"></i>
-                            <span>Transform Excel</span>
                         </a>
                     </li>
                     <li>
@@ -89,8 +110,8 @@
             </nav>
 
             @php
-                $isProfileActive = Route::currentRouteName() == 'profile.edit' || str_starts_with(Route::currentRouteName(), 'users');
-                $profileRoute = (Auth::check() && Auth::user()->role === 'admin') ? route('users.index') : route('profile.edit');
+            $isProfileActive = Route::currentRouteName() == 'profile.edit' || str_starts_with(Route::currentRouteName(), 'users');
+            $profileRoute = (Auth::check() && Auth::user()->role === 'admin') ? route('users.index') : route('profile.edit');
             @endphp
             <div class="sidebar-footer">
                 <a href="{{ $profileRoute }}" class="user-profile {{ $isProfileActive ? 'active' : '' }}" title="Klik untuk Kelola Akun" style="text-decoration: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: var(--radius-md); border: 1px solid {{ $isProfileActive ? 'var(--color-primary)' : 'var(--glass-border)' }}; background: {{ $isProfileActive ? 'rgba(99, 102, 241, 0.15)' : 'rgba(255, 255, 255, 0.02)' }}; transition: var(--transition-smooth);">
@@ -147,15 +168,15 @@
 
             <!-- Alert Notification -->
             @if(session('success'))
-                <div class="alert alert-success alert-dismissible" id="success-alert">
-                    <div class="alert-content">
-                        <i class="bi bi-check-circle-fill"></i>
-                        <span>{{ session('success') }}</span>
-                    </div>
-                    <button class="alert-close" onclick="document.getElementById('success-alert').remove()">
-                        <i class="bi bi-x"></i>
-                    </button>
+            <div class="alert alert-success alert-dismissible" id="success-alert">
+                <div class="alert-content">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>{{ session('success') }}</span>
                 </div>
+                <button class="alert-close" onclick="document.getElementById('success-alert').remove()">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
             @endif
 
             <!-- Main Content Blade Yield -->
@@ -166,7 +187,7 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const toggleBtn = document.getElementById('sidebar-toggle-btn');
             const appContainer = document.querySelector('.app-container');
 
@@ -176,7 +197,7 @@
                 toggleBtn.querySelector('i').className = 'bi bi-chevron-right';
             }
 
-            toggleBtn.addEventListener('click', function () {
+            toggleBtn.addEventListener('click', function() {
                 appContainer.classList.toggle('sidebar-collapsed');
                 const collapsed = appContainer.classList.contains('sidebar-collapsed');
                 localStorage.setItem('sidebar-collapsed', collapsed);
@@ -189,11 +210,11 @@
             const sidebarOverlay = document.getElementById('sidebar-overlay');
 
             if (mobileMenuToggle && sidebarOverlay) {
-                mobileMenuToggle.addEventListener('click', function () {
+                mobileMenuToggle.addEventListener('click', function() {
                     appContainer.classList.add('mobile-sidebar-open');
                 });
 
-                sidebarOverlay.addEventListener('click', function () {
+                sidebarOverlay.addEventListener('click', function() {
                     appContainer.classList.remove('mobile-sidebar-open');
                 });
             }
@@ -224,7 +245,40 @@
 
             if (themeToggleBtn) themeToggleBtn.addEventListener('click', toggleTheme);
             if (themeToggleBtnMobile) themeToggleBtnMobile.addEventListener('click', toggleTheme);
+
+            // Submenu Expand/Collapse logic
+            const submenuToggle = document.getElementById('submenu-toggle-trigger');
+            const subMenuEl = document.getElementById('excel-sub-menu');
+            const chevronIcon = document.getElementById('submenu-toggle-chevron');
+
+            if (submenuToggle && subMenuEl && chevronIcon) {
+                let savedSubState = localStorage.getItem('excel-submenu-state');
+
+                // Set initial state
+                if (savedSubState === 'hide') {
+                    subMenuEl.style.display = 'none';
+                    chevronIcon.style.transform = 'rotate(-90deg)';
+                } else {
+                    subMenuEl.style.display = 'block';
+                    chevronIcon.style.transform = 'rotate(0deg)';
+                }
+
+                submenuToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (subMenuEl.style.display === 'none') {
+                        subMenuEl.style.display = 'block';
+                        chevronIcon.style.transform = 'rotate(0deg)';
+                        localStorage.setItem('excel-submenu-state', 'show');
+                    } else {
+                        subMenuEl.style.display = 'none';
+                        chevronIcon.style.transform = 'rotate(-90deg)';
+                        localStorage.setItem('excel-submenu-state', 'hide');
+                    }
+                });
+            }
         });
     </script>
 </body>
+
 </html>

@@ -121,6 +121,10 @@ class SharedFileController extends Controller
             return redirect()->back()->with('error', 'Berkas fisik tidak ditemukan di server.');
         }
 
+        // Update download count and time
+        $file->increment('downloads_count');
+        $file->update(['last_downloaded_at' => now()]);
+
         return response()->download($fullPath, $file->original_name);
     }
 

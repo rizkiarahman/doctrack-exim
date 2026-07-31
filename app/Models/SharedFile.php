@@ -15,6 +15,12 @@ class SharedFile extends Model
         'mime_type',
         'file_size',
         'user_id',
+        'downloads_count',
+        'last_downloaded_at',
+    ];
+
+    protected $casts = [
+        'last_downloaded_at' => 'datetime',
     ];
 
     /**

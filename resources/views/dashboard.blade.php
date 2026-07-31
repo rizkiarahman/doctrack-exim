@@ -102,6 +102,99 @@
 </div>
 @endif
 
+<!-- To-Do List & Daily Task Statistics Row -->
+<div class="card" style="margin-bottom: 30px; padding: 24px; position: relative; overflow: hidden; border-left: 4px solid var(--color-warning);">
+    <div style="position: absolute; width: 180px; height: 180px; background: radial-gradient(circle, rgba(245,158,11,0.06) 0%, transparent 70%); top: -40px; right: -40px; pointer-events: none;"></div>
+    
+    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--glass-border); padding-bottom: 14px; margin-bottom: 16px;">
+        <div>
+            <h3 style="font-family: var(--font-heading); font-size: 15px; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 8px;">
+                <i class="bi bi-calendar-check-fill text-warning" style="color: var(--color-warning) !important;"></i>
+                Jadwal & Daftar Tugas Hari Ini
+            </h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 2px 0 0 0;">Status progres dan rincian tugas harian Anda</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div style="text-align: right;">
+                <span id="dash-live-time" style="font-size: 14px; font-weight: 700; color: var(--text-primary); font-family: monospace;">00:00:00</span>
+            </div>
+            <a href="{{ route('todo.index') }}" class="btn btn-primary btn-sm" style="padding: 6px 14px; font-size: 11px;">
+                <i class="bi bi-gear-fill"></i> Kelola Tugas
+            </a>
+        </div>
+    </div>
+
+    <!-- Progress & Tasks Timeline Row -->
+    <div style="display: grid; grid-template-columns: 320px 1fr; gap: 24px;">
+        <!-- Left: Progress Bar -->
+        <div style="display: flex; flex-direction: column; justify-content: center; background: rgba(255,255,255,0.015); border: 1px solid var(--glass-border); padding: 16px; border-radius: var(--radius-md);">
+            <span style="font-size: 11px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">PROGRES HARI INI</span>
+            <div style="display: flex; align-items: baseline; gap: 6px; margin-bottom: 8px;">
+                <span style="font-size: 28px; font-weight: 800; color: var(--text-primary);">{{ $todoProgress }}%</span>
+                <span style="font-size: 11px; color: var(--color-success); font-weight: 600;">Selesai</span>
+            </div>
+            <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; border: 1px solid var(--glass-border); margin-bottom: 12px;">
+                <div style="width: {{ $todoProgress }}%; height: 100%; background: linear-gradient(90deg, var(--color-primary), var(--color-success));"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted);">
+                <span>Total: <strong>{{ $todoTasks->count() }}</strong></span>
+                <span>Selesai: <strong class="text-success">{{ $todoTasks->where('status', 'selesai')->count() }}</strong></span>
+            </div>
+        </div>
+
+        <!-- Right: Horizontally Scrollable or Compact Timeline List -->
+        <div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px;">
+            @forelse($todoTasks as $t)
+                @php
+                    $badgeColor = 'grey';
+                    $borderColor = 'var(--glass-border)';
+                    if ($t->status === 'sedang_dikerjakan') {
+                        $badgeColor = 'var(--color-primary)';
+                        $borderColor = 'rgba(99, 102, 241, 0.25)';
+                    } elseif ($t->status === 'menunggu') {
+                        $badgeColor = 'var(--color-warning)';
+                        $borderColor = 'rgba(245, 158, 11, 0.25)';
+                    } elseif ($t->status === 'selesai') {
+                        $badgeColor = 'var(--color-success)';
+                        $borderColor = 'rgba(16, 185, 129, 0.25)';
+                    } elseif ($t->status === 'terlambat') {
+                        $badgeColor = 'var(--color-danger)';
+                        $borderColor = 'rgba(239, 68, 68, 0.25)';
+                    }
+                @endphp
+                <div style="min-width: 180px; max-width: 180px; background: rgba(255,255,255,0.01); border: 1px solid {{ $borderColor }}; border-top: 3px solid {{ $badgeColor }}; padding: 12px; border-radius: var(--radius-sm); display: flex; flex-direction: column; justify-content: space-between; height: 115px;">
+                    <div>
+                        <span style="font-size: 9px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">{{ $t->time_start }} - {{ $t->time_end }}</span>
+                        <p style="font-size: 11px; font-weight: 700; color: var(--text-primary); margin: 0; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;" title="{{ $t->title }}">
+                            {{ $t->title }}
+                        </p>
+                    </div>
+                    <span style="font-size: 9px; font-weight: 600; color: {{ $badgeColor }}; text-transform: uppercase; margin-top: 5px; display: flex; align-items: center; gap: 4px;">
+                        <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: {{ $badgeColor }};"></span>
+                        {{ str_replace('_', ' ', $t->status) }}
+                    </span>
+                </div>
+            @empty
+                <div style="display: flex; align-items: center; justify-content: center; width: 100%; color: var(--text-muted); font-size: 12px;">
+                    Belum ada tugas hari ini.
+                </div>
+            @endforelse
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const timeEl = document.getElementById('dash-live-time');
+        if (timeEl) {
+            setInterval(() => {
+                const now = new Date();
+                timeEl.textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+            }, 1000);
+        }
+    });
+</script>
+
 <!-- Dashboard Columns: AI Assistant and Recent Documents -->
 <div class="dashboard-columns">
     <!-- Left Column: Recent Documents -->
